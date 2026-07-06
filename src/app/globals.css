@@ -1,49 +1,138 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ─────────────────────────────────────────────────────────────────────────
+   Dhaka Founders — Global Stylesheet
+   Tailwind CSS v4  |  CSS-first configuration via @theme
+   Google Fonts loaded zero-CLS via next/font/google in layout.tsx;
+   their CSS variables are consumed here by the @theme block.
+───────────────────────────────────────────────────────────────────────── */
 
-/* ── Brand CSS Custom Properties ── */
-:root {
-  --brand-blue: #1e73be;
-  --brand-navy: #111827;
-  --brand-soft-blue: #eff6ff;
+@import "tailwindcss";
+
+/* ── Explicit source paths for Tailwind's content scanner ── */
+@source "../components/**/*.{ts,tsx}";
+@source "./**/*.{ts,tsx}";
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DESIGN TOKENS  —  derived directly from brand-dna.md
+   All --color-*, --font-*, --shadow-*, and --animate-* tokens declared
+   here become first-class Tailwind utility classes automatically.
+   e.g.  --color-brand-blue  →  bg-brand-blue / text-brand-blue / border-brand-blue
+══════════════════════════════════════════════════════════════════════════ */
+@theme {
+
+  /* ── 1. Color Palette  (brand-dna.md §1) ──────────────────────────── */
+
+  /* Primary — Brand Blue: key highlights, primary buttons, logo accent */
+  --color-brand-blue:      #1e73be;
+  --color-brand-blue-dark: #1a68ab;  /* hover / pressed state */
+  --color-brand-blue-muted: #1e73be26; /* ~15% opacity tint for icon bg */
+
+  /* Secondary — Dark Navy / Charcoal: prominent heading text */
+  --color-brand-navy:      #111827;
+  --color-brand-navy-soft: #1f2937;  /* slightly lighter navy for cards */
+
+  /* Accent — Soft Light Blue: gradient glow and badge background */
+  --color-brand-soft-blue: #eff6ff;
+  --color-brand-soft-blue-border: #bfdbfe; /* border on soft-blue elements */
+
+  /* Supporting neutrals (referenced by components) */
+  --color-surface:         #ffffff;
+  --color-surface-muted:   #f8fafc;
+  --color-border:          #e2e8f0;
+  --color-border-subtle:   #f1f5f9;
+
+  /* ── 2. Typography  (brand-dna.md §2) ───────────────────────────────
+     next/font/google in layout.tsx injects:
+       --font-plus-jakarta   ← Plus Jakarta Sans (headings)
+       --font-inter          ← Inter (body)
+     We consume those CSS vars here so Tailwind emits font-sans /
+     font-heading utility classes backed by the preloaded web fonts.
+  ── */
+  --font-sans:    var(--font-plus-jakarta), var(--font-inter),
+                  ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    ui-monospace, "Cascadia Code", "Fira Mono", monospace;
+
+  /* ── 3. Brand Shadows ─────────────────────────────────────────────── */
+  --shadow-brand:    0 4px 24px rgb(30 115 190 / 0.20);
+  --shadow-brand-lg: 0 8px 40px rgb(30 115 190 / 0.25);
+  --shadow-card:     0 1px 3px rgb(0 0 0 / 0.06), 0 1px 2px rgb(0 0 0 / 0.04);
+  --shadow-card-hover: 0 10px 40px rgb(30 115 190 / 0.10);
+
+  /* ── 4. Animations & Keyframes ───────────────────────────────────── */
+  --animate-fade-in:   fadeIn   0.5s ease-out both;
+  --animate-slide-up:  slideUp  0.5s ease-out both;
+  --animate-slide-down: slideDown 0.3s ease-out both;
+  --animate-pulse-soft: pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-/* ── Base Reset ── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* ── Keyframe definitions ─────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Selection ── */
-::selection {
-  background-color: #1e73be22;
-  color: #111827;
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
 }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar {
-  width: 6px;
+/* ══════════════════════════════════════════════════════════════════════════
+   BASE LAYER  —  global resets and defaults
+══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+
+  /* Universal box-sizing */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    /* Apply brand navy as the document color so headings inherit correctly */
+    color: var(--color-brand-navy);
+  }
+
+  body {
+    font-family:             var(--font-sans);
+    background-color:        var(--color-surface);
+    -webkit-font-smoothing:  antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering:          optimizeLegibility;
+  }
+
+  /* Headings: always Plus Jakarta Sans */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color:       var(--color-brand-navy);
+  }
+
+  /* Text selection: brand-blue tinted */
+  ::selection {
+    background-color: rgb(30 115 190 / 0.15);
+    color:            var(--color-brand-navy);
+  }
+
+  /* Focus ring: brand-blue */
+  :focus-visible {
+    outline:        2px solid var(--color-brand-blue);
+    outline-offset: 3px;
+    border-radius:  4px;
+  }
 }
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 99px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #1e73be;
-}
+
+/* ── Custom scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar          { width: 6px; }
+::-webkit-scrollbar-track    { background: var(--color-border-subtle); }
+::-webkit-scrollbar-thumb    { background: var(--color-border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-brand-blue); }
