@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -57,9 +58,11 @@ export default function RootLayout({
       className={`${plusJakarta.variable} ${inter.variable}`}
     >
       <body className="font-sans bg-white text-brand-navy antialiased">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ClerkProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ClerkProvider>
       </body>
     </html>
   );

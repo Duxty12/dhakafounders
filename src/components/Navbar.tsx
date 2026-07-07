@@ -3,18 +3,24 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Zap } from "lucide-react";
+import { LayoutDashboard, Menu, X, Zap } from "lucide-react";
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useAuth,
+} from "@clerk/nextjs";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/directory", label: "Directory" },
-  { href: "/dashboard", label: "Dashboard" },
 ] as const;
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -35,9 +41,7 @@ export default function Navbar() {
         fixed top-0 left-0 right-0 z-50
         transition-all duration-500 ease-in-out
         ${scrolled
-          /* Scrolled: strong glass — white frost with brand-blue tinted border */
           ? "bg-white/80 backdrop-blur-xl backdrop-saturate-150 border-b border-brand-blue/10 shadow-[0_1px_24px_rgba(30,115,190,0.08)]"
-          /* At top: subtle glass so hero gradient shows through */
           : "bg-white/40 backdrop-blur-md backdrop-saturate-100 border-b border-white/20"
         }
       `}
@@ -60,7 +64,6 @@ export default function Navbar() {
                 transition-all duration-300 ease-out overflow-hidden
               "
             >
-              {/* Inner shimmer on hover */}
               <span
                 aria-hidden="true"
                 className="
@@ -106,7 +109,6 @@ export default function Navbar() {
                   `}
                 >
                   {label}
-                  {/* Active / hover underline */}
                   <span
                     className={`
                       absolute -bottom-0.5 left-0 h-[2px] rounded-full
@@ -118,37 +120,91 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Dashboard link — only shown when signed in */}
+            {isSignedIn && (
+              <Link
+                href="/dashboard"
+                className={`
+                  relative text-sm font-semibold tracking-wide
+                  transition-colors duration-200 group
+                  ${pathname === "/dashboard"
+                    ? "text-brand-blue"
+                    : "text-gray-500 hover:text-brand-blue"
+                  }
+                `}
+              >
+                Dashboard
+                <span
+                  className={`
+                    absolute -bottom-0.5 left-0 h-[2px] rounded-full
+                    bg-[linear-gradient(90deg,#1E73BE,#3b9de8)]
+                    transition-all duration-300
+                    ${pathname === "/dashboard" ? "w-full" : "w-0 group-hover:w-full"}
+                  `}
+                />
+              </Link>
+            )}
           </div>
 
-          {/* ── Join Button ── */}
-          <div className="hidden md:flex items-center">
-            <Link
-              id="nav-join-network"
-              href="/directory"
-              className="
-                group relative flex items-center gap-2
-                px-5 py-2.5 rounded-xl
-                bg-brand-blue text-white text-sm font-bold tracking-wide
-                shadow-brand
-                overflow-hidden
-                transition-all duration-300 ease-out
-                hover:scale-[1.04] hover:shadow-brand-lg hover:-translate-y-px
-                active:scale-[0.98] active:shadow-sm
-              "
-            >
-              {/* Shimmer sweep on hover */}
-              <span
-                aria-hidden="true"
-                className="
-                  absolute inset-0
-                  translate-x-[-110%] group-hover:translate-x-[110%]
-                  transition-transform duration-500 ease-in-out
-                  bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.2)_50%,transparent_80%)]
-                "
+          {/* ── Desktop Auth Controls ── */}
+          <div className="hidden md:flex items-center gap-3">
+            {isSignedIn ? (
+              /* Signed in: UserButton avatar */
+              <UserButton
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox:
+                      "w-9 h-9 rounded-xl ring-2 ring-brand-blue/20 hover:ring-brand-blue/50 transition-all duration-200",
+                  },
+                }}
               />
-              <Zap className="relative w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-12" />
-              <span className="relative">Join the Network</span>
-            </Link>
+            ) : (
+              /* Signed out: Sign In + Sign Up */
+              <>
+                <SignInButton mode="redirect">
+                  <button
+                    id="nav-sign-in"
+                    className="
+                      text-sm font-semibold text-gray-600
+                      hover:text-brand-blue transition-colors duration-200
+                      px-4 py-2 rounded-xl hover:bg-brand-soft-blue
+                    "
+                  >
+                    Sign In
+                  </button>
+                </SignInButton>
+
+                <SignUpButton mode="redirect">
+                  <button
+                    id="nav-sign-up"
+                    className="
+                      group relative flex items-center gap-2
+                      px-5 py-2.5 rounded-xl
+                      bg-brand-blue text-white text-sm font-bold tracking-wide
+                      shadow-brand overflow-hidden
+                      transition-all duration-300 ease-out
+                      hover:scale-[1.04] hover:shadow-brand-lg hover:-translate-y-px
+                      active:scale-[0.98] active:shadow-sm
+                    "
+                  >
+                    {/* Shimmer sweep */}
+                    <span
+                      aria-hidden="true"
+                      className="
+                        absolute inset-0
+                        translate-x-[-110%] group-hover:translate-x-[110%]
+                        transition-transform duration-500 ease-in-out
+                        bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.2)_50%,transparent_80%)]
+                      "
+                    />
+                    <Zap className="relative w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-12" />
+                    <span className="relative">Sign Up</span>
+                  </button>
+                </SignUpButton>
+              </>
+            )}
           </div>
 
           {/* ── Mobile Hamburger ── */}
@@ -163,10 +219,7 @@ export default function Navbar() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen
-              ? <X className="w-5 h-5" />
-              : <Menu className="w-5 h-5" />
-            }
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
 
         </div>
@@ -183,6 +236,7 @@ export default function Navbar() {
             shadow-[0_8px_32px_rgba(30,115,190,0.10)]
           "
         >
+          {/* Nav links */}
           {NAV_LINKS.map(({ href, label }) => (
             <Link
               key={href}
@@ -200,30 +254,75 @@ export default function Navbar() {
             </Link>
           ))}
 
-          <div className="pt-2 mt-1 border-t border-gray-100">
+          {/* Dashboard link — only when signed in */}
+          {isSignedIn && (
             <Link
-              id="mobile-nav-join"
-              href="/directory"
-              className="
-                group relative flex items-center justify-center gap-2
-                w-full px-4 py-3 rounded-xl overflow-hidden
-                bg-brand-blue text-white text-sm font-bold
-                shadow-brand transition-all duration-300
-                hover:shadow-brand-lg active:scale-[0.98]
-              "
+              href="/dashboard"
+              className={`
+                flex items-center gap-2 text-sm font-semibold py-2.5 px-3 rounded-xl
+                transition-all duration-200
+                ${pathname === "/dashboard"
+                  ? "text-brand-blue bg-brand-soft-blue"
+                  : "text-gray-600 hover:text-brand-blue hover:bg-brand-soft-blue/60"
+                }
+              `}
             >
-              <span
-                aria-hidden="true"
-                className="
-                  absolute inset-0
-                  translate-x-[-110%] group-hover:translate-x-[110%]
-                  transition-transform duration-500 ease-in-out
-                  bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.2)_50%,transparent_80%)]
-                "
-              />
-              <Zap className="relative w-3.5 h-3.5" />
-              <span className="relative">Join the Network</span>
+              <LayoutDashboard className="w-4 h-4" />
+              Dashboard
             </Link>
+          )}
+
+          {/* Auth section */}
+          <div className="pt-2 mt-1 border-t border-gray-100 space-y-2">
+            {isSignedIn ? (
+              /* Signed in: avatar + label */
+              <div className="flex items-center gap-3 px-3 py-2">
+                <UserButton afterSignOutUrl="/" />
+                <span className="text-sm font-medium text-gray-600">My Account</span>
+              </div>
+            ) : (
+              /* Signed out: Sign In + Sign Up */
+              <>
+                <SignInButton mode="redirect">
+                  <button
+                    id="mobile-nav-sign-in"
+                    className="
+                      w-full px-4 py-2.5 rounded-xl border border-gray-200
+                      text-sm font-semibold text-gray-700
+                      hover:border-brand-blue/40 hover:text-brand-blue hover:bg-brand-soft-blue
+                      transition-all duration-200
+                    "
+                  >
+                    Sign In
+                  </button>
+                </SignInButton>
+
+                <SignUpButton mode="redirect">
+                  <button
+                    id="mobile-nav-sign-up"
+                    className="
+                      group relative flex items-center justify-center gap-2
+                      w-full px-4 py-3 rounded-xl overflow-hidden
+                      bg-brand-blue text-white text-sm font-bold
+                      shadow-brand transition-all duration-300
+                      hover:shadow-brand-lg active:scale-[0.98]
+                    "
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="
+                        absolute inset-0
+                        translate-x-[-110%] group-hover:translate-x-[110%]
+                        transition-transform duration-500 ease-in-out
+                        bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.2)_50%,transparent_80%)]
+                      "
+                    />
+                    <Zap className="relative w-3.5 h-3.5" />
+                    <span className="relative">Sign Up</span>
+                  </button>
+                </SignUpButton>
+              </>
+            )}
           </div>
         </div>
       )}
