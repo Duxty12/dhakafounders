@@ -152,7 +152,6 @@ export default function Navbar() {
             {isSignedIn ? (
               /* Signed in: UserButton avatar */
               <UserButton
-                afterSignOutUrl="/"
                 appearance={{
                   elements: {
                     avatarBox:
@@ -277,7 +276,7 @@ export default function Navbar() {
             {isSignedIn ? (
               /* Signed in: avatar + label */
               <div className="flex items-center gap-3 px-3 py-2">
-                <UserButton afterSignOutUrl="/" />
+                <UserButton />
                 <span className="text-sm font-medium text-gray-600">My Account</span>
               </div>
             ) : (
