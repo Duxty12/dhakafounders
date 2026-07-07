@@ -57,62 +57,39 @@ const FEATURES: {
   },
 ];
 
-const FEATURED_STARTUPS: StartupCardProps[] = [
-  {
-    name: "ShopUp",
-    tagline: "Empowering B2B commerce for small businesses across Bangladesh.",
-    sector: "B2B Commerce",
-    stage: "Series B",
-    founderName: "Afeef Zaman",
-    location: "Dhaka",
-    logoInitials: "SU",
-    logoColor: "#1E73BE",
-    slug: "shopup",
-  },
-  {
-    name: "Shajgoj",
-    tagline: "The leading beauty & wellness marketplace in South Asia.",
-    sector: "E-Commerce",
-    stage: "Series A",
-    founderName: "Sonya Hossain",
-    location: "Dhaka",
-    logoInitials: "SJ",
-    logoColor: "#D946EF",
-    slug: "shajgoj",
-  },
-  {
-    name: "Chaldal",
-    tagline: "Ultra-fast grocery delivery reimagining urban food supply chains.",
-    sector: "Quick Commerce",
-    stage: "Series B",
-    founderName: "Waseem Alim",
-    location: "Dhaka",
-    logoInitials: "CH",
-    logoColor: "#059669",
-    slug: "chaldal",
-  },
-];
 
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
 export default async function HomePage() {
-  // ── Supabase connection test ────────────────────────────────────────────────
-  // Verifies the Supabase client initialises correctly by fetching the auth
-  // session (no DB tables required). Result is logged to the server console.
+  // ── Supabase connection test + featured startups fetch ──────────────────────
+  let featuredStartups: StartupCardProps[] = [];
   try {
     const cookieStore = await cookies();
     const supabase = createClient(cookieStore);
-    const { data, error } = await supabase.auth.getSession();
-    if (error) {
-      console.error("[Supabase] Connection test FAILED:", error.message);
+
+    // Connection test
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error("[Supabase] Connection test FAILED:", sessionError.message);
     } else {
       console.log(
         "[Supabase] ✅ Connection successful! Session:",
-        data.session ? "active" : "none (no user signed in — expected)"
+        sessionData.session ? "active" : "none (no user signed in — expected)"
       );
     }
+
+    // Fetch 3 newest profiles for the featured section
+    const { data, error } = await supabase
+      .from("company_profile")
+      .select("id, company_name, category, description, website_url, founder_name, founder_email, linkedin_url, created_at")
+      .order("created_at", { ascending: false })
+      .limit(3);
+
+    if (!error && data) {
+      featuredStartups = data as StartupCardProps[];
+    }
   } catch (err) {
-    console.error("[Supabase] Unexpected error during connection test:", err);
+    console.error("[Supabase] Unexpected error:", err);
   }
   // ────────────────────────────────────────────────────────────────────────────
 
@@ -241,9 +218,18 @@ export default async function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {FEATURED_STARTUPS.map((startup) => (
-              <StartupCard key={startup.slug} {...startup} />
-            ))}
+            {featuredStartups.length > 0 ? (
+              featuredStartups.map((startup) => (
+                <StartupCard key={startup.id} {...startup} />
+              ))
+            ) : (
+              <div className="md:col-span-3 text-center py-12 text-gray-400 text-sm">
+                No startups listed yet.{" "}
+                <Link href="/dashboard/profile" className="text-[#1E73BE] font-semibold hover:underline">
+                  Submit yours →
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
