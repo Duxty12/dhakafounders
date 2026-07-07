@@ -10,6 +10,10 @@ import {
 } from "lucide-react";
 import HeroHeadline from "@/components/landing/HeroHeadline";
 import StartupCard, { type StartupCardProps } from "@/components/ui/StartupCard";
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Dhaka Founders — Bangladesh's Premier Founder Directory",
@@ -91,7 +95,27 @@ const FEATURED_STARTUPS: StartupCardProps[] = [
 
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
-export default function HomePage() {
+export default async function HomePage() {
+  // ── Supabase connection test ────────────────────────────────────────────────
+  // Verifies the Supabase client initialises correctly by fetching the auth
+  // session (no DB tables required). Result is logged to the server console.
+  try {
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.error("[Supabase] Connection test FAILED:", error.message);
+    } else {
+      console.log(
+        "[Supabase] ✅ Connection successful! Session:",
+        data.session ? "active" : "none (no user signed in — expected)"
+      );
+    }
+  } catch (err) {
+    console.error("[Supabase] Unexpected error during connection test:", err);
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   return (
     <div className="min-h-screen">
       {/* ── Hero ── */}

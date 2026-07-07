@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.5.13",
+    "@supabase/ssr": "^0.12.0",
+    "@supabase/supabase-js": "^2.109.0",
     "lucide-react": "^0.511.0",
     "next": "latest",
     "react": "^19.0.0",
