@@ -4,6 +4,8 @@ import {
   ArrowUpRight,
   BarChart3,
   Bell,
+  Building2,
+  ChevronRight,
   Plus,
   Settings,
   Star,
@@ -119,6 +121,14 @@ export default function DashboardPage() {
             >
               <Bell className="w-4 h-4" />
             </button>
+            <Link
+              id="dashboard-update-company-profile"
+              href="/dashboard/profile"
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#1E73BE] text-[#1E73BE] text-sm font-semibold rounded-xl hover:bg-[#EFF6FF] transition-all duration-200 shadow-sm"
+            >
+              <Building2 className="w-4 h-4" />
+              Update Company Profile
+            </Link>
             <button
               id="dashboard-list-startup"
               className="flex items-center gap-2 px-4 py-2 bg-[#1E73BE] text-white text-sm font-semibold rounded-xl hover:bg-[#1a68ab] transition-colors duration-200 shadow-sm"
@@ -128,6 +138,31 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+
+        {/* Update Company Profile Banner */}
+        <Link
+          id="dashboard-update-company-profile-banner"
+          href="/dashboard/profile"
+          className="group flex items-center justify-between w-full mb-8 p-5 rounded-2xl border border-[#1E73BE]/20 bg-gradient-to-r from-[#EFF6FF] via-white to-[#EFF6FF] hover:from-[#DBEAFE] hover:to-[#DBEAFE] hover:border-[#1E73BE]/40 transition-all duration-300 shadow-sm hover:shadow-md"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-[#1E73BE] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform duration-200">
+              <Building2 className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-[#111827] group-hover:text-[#1E73BE] transition-colors duration-200">
+                Update Company Profile
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Keep your company details, mission, and team info up to date.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#1E73BE] text-white text-xs font-semibold rounded-xl group-hover:bg-[#1a68ab] transition-colors duration-200 shrink-0 shadow-sm">
+            Edit Profile
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
+          </div>
+        </Link>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
