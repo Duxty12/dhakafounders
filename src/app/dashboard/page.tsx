@@ -63,7 +63,7 @@ const QUICK_ACTIONS: { label: string; href: string }[] = [
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 flex">
+    <div className="min-h-screen bg-gray-50 pt-16 flex overflow-x-hidden">
       {/* ── Sidebar ── */}
       <aside className="hidden lg:flex flex-col w-64 min-h-[calc(100vh-4rem)] bg-white border-r border-gray-100 sticky top-16 shrink-0">
         <div className="p-5 pt-8 flex-1">
@@ -104,7 +104,7 @@ export default function DashboardPage() {
       {/* ── Main Content ── */}
       <div className="flex-1 p-6 lg:p-10 max-w-5xl">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
           <div>
             <h1 className="text-2xl font-extrabold text-[#111827] tracking-tight">
               Founder Dashboard
@@ -113,25 +113,26 @@ export default function DashboardPage() {
               Welcome back. Here&apos;s your ecosystem pulse.
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               id="dashboard-notifications"
               aria-label="View notifications"
-              className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-[#1E73BE]/50 hover:text-[#1E73BE] hover:bg-[#EFF6FF] transition-all duration-200"
+              className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-[#1E73BE]/50 hover:text-[#1E73BE] hover:bg-[#EFF6FF] transition-all duration-200 shrink-0"
             >
               <Bell className="w-4 h-4" />
             </button>
+            {/* Hidden on mobile — the banner card below serves as the CTA */}
             <Link
               id="dashboard-update-company-profile"
               href="/dashboard/profile"
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-[#1E73BE] text-[#1E73BE] text-sm font-semibold rounded-xl hover:bg-[#EFF6FF] transition-all duration-200 shadow-sm"
+              className="hidden sm:flex items-center gap-2 px-4 py-2 bg-white border border-[#1E73BE] text-[#1E73BE] text-sm font-semibold rounded-xl hover:bg-[#EFF6FF] transition-all duration-200 shadow-sm whitespace-nowrap"
             >
               <Building2 className="w-4 h-4" />
               Update Company Profile
             </Link>
             <button
               id="dashboard-list-startup"
-              className="flex items-center gap-2 px-4 py-2 bg-[#1E73BE] text-white text-sm font-semibold rounded-xl hover:bg-[#1a68ab] transition-colors duration-200 shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-[#1E73BE] text-white text-sm font-semibold rounded-xl hover:bg-[#1a68ab] transition-colors duration-200 shadow-sm whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               List Startup
