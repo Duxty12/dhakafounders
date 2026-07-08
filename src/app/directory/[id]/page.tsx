@@ -217,19 +217,21 @@ export default async function StartupProfilePage({ params }: PageProps) {
           <div className="absolute top-10 left-10 w-72 h-72 bg-[#1E73BE]/5 rounded-full blur-2xl" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-end pb-8 relative z-10">
+      </div>
+
+      {/* Profile Card Container */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-14 relative z-20">
+        {/* Back Button */}
+        <div className="mb-6">
           <Link
             href="/directory"
-            className="absolute top-8 left-4 sm:left-8 inline-flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-white text-sm font-semibold text-gray-600 hover:text-[#1E73BE] rounded-xl border border-gray-100 shadow-sm transition-all duration-200"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/90 hover:bg-white text-sm font-semibold text-gray-600 hover:text-[#1E73BE] rounded-xl border border-gray-200/60 shadow-sm transition-all duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Directory
           </Link>
         </div>
-      </div>
 
-      {/* Profile Card Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main info (left/center) */}
           <div className="lg:col-span-2 space-y-6">

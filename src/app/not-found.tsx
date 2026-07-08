@@ -82,7 +82,7 @@ function ParticleCanvas() {
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#EFF6FF] flex flex-col items-center justify-center px-4">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-[#EFF6FF] via-white to-[#EFF6FF] flex flex-col items-center justify-center pt-24 pb-12 px-4">
 
       {/* Decorative blobs */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
